@@ -1,0 +1,15 @@
+{
+  "name": "node-basic-site",
+  "version": "1.0.0",
+  "description": "Create basic informational site using node.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
