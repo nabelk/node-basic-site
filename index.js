@@ -1,9 +1,11 @@
-const http = require("http");
-const fs = require("fs");
+const express = require("express");
+const app = express();
 const path = require("path");
 
-function getFileName(url) {
-  switch (url) {
+app.use(express.static(path.join(__dirname, "public")));
+
+function getFileName(path) {
+  switch (path) {
     case "/":
       return "index.html";
     case "/about":
@@ -11,17 +13,19 @@ function getFileName(url) {
     case "/contact":
       return "contact-me.html";
     default:
-      return "404.html";
+      return null;
   }
 }
 
-http
-  .createServer((req, res) => {
-    const filename = getFileName(req.url);
-    fs.readFile(path.join(__dirname, "public", filename), (err, content) => {
-      if (err) throw err;
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.end(content, "utf-8");
-    });
-  })
-  .listen(8080, () => console.log("Server running...."));
+app.get(["/", "/about", "/contact"], (req, res) => {
+  const filename = getFileName(req.originalUrl);
+  if (filename) return res.sendFile(path.join(__dirname, "public", filename));
+
+  return res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+});
+
+app.get("*", (req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+});
+
+app.listen(8080, () => console.log("Server running...."));
